@@ -1,0 +1,21 @@
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/coreos/etcd
+After=network.target
+
+[Service]
+Type=notify
+Environment=IPV4=192.168.137.118
+Environment=ETCD_DATA_DIR=/var/lib/etcd
+Environment=ETCD_NAME=%m
+Environment=ETCD_AUTO_TLS=1
+Environment=ETCD_PEER_AUTO_TLS=1
+Environment=ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+Environment=ETCD_INITIAL_CLUSTER_STATE=new
+ExecStart=/usr/local/bin/etcd --initial-advertise-peer-urls https://${IPV4}:2380 --listen-peer-urls https://${IPV4}:2380 --listen-client-urls https://${IPV4}:2379,https://127.0.0.1:2379 --advertise-client-urls https://${IPV4}:2379 --initial-cluster infra0=https://${IPV4}:2380
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target
